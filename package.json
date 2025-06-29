@@ -2,7 +2,7 @@
   "name": "jspsych-template",
   "private": true,
   "version": "0.2.1",
-  "type": "commonjs",
+  "type": "module",
   "main": "src/electron-main.js",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
