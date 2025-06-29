@@ -64,7 +64,7 @@ function end(obj: Record<string, any>) {
             </div>
         </div>
         <div class="display" v-if="page === 3 || page === 4">
-            <CoreScreen :prac="true" />
+            <CoreScreen :prac="true" v-if="page === 3 || page === 4" />
             <div class="text-box" v-if="page === 3">
                 <p>现在我们来练习一下。</p>
                 <p>移动鼠标，可以让坐标轴进行移动。你可以用坐标轴接住从飞机上掉落的物品。</p>
@@ -111,6 +111,8 @@ function end(obj: Record<string, any>) {
 
 <style lang="css" scoped>
 .display {
+    max-height: 100vh;
+    overflow: auto;
     font-size: 16px;
     line-height: 24px;
     text-indent: 2em;
