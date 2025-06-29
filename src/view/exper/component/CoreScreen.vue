@@ -2,6 +2,8 @@
 import { onMounted, ref } from 'vue';
 import { useLoaderAssets } from '../../../store/loadAssetsToBlob';
 import { JsPsych } from '../../../utils/jsPsych/jsPsych';
+import { useCheckBrowserInfo } from '../../../store/browserCheck';
+import { ElMessage } from 'element-plus';
 
 const props = defineProps({
     location: {
@@ -15,9 +17,14 @@ const props = defineProps({
     showCloud: {
         type: Boolean,
         default: false
+    },
+    prac: {
+        type: Boolean,
+        default: false
     }
 });
 const loader = useLoaderAssets();
+const isTouch = useCheckBrowserInfo().browser.isTouch;
 /**
  * 进度条
  */
@@ -94,7 +101,7 @@ function drawCursor(ctx: CanvasRenderingContext2D) {
     ctx.stroke();
 }
 function drawCloud(ctx: CanvasRenderingContext2D) {
-    ctx.drawImage(i_clouds, 0, 0, i_clouds.width, i_clouds.height, 0, 0, width, height * 0.3);
+    ctx.drawImage(i_clouds, 0, 0, i_clouds.width, i_clouds.height, 0, 0, width, height * 0.4);
 }
 function drawBag(ctx: CanvasRenderingContext2D) {
     const x = x1 + (x2 - x1) * props.location / 100;
@@ -109,14 +116,16 @@ function drawBag(ctx: CanvasRenderingContext2D) {
         JsPsych.plugin.timer.clearAllTimer();
         a_cashreg.play();
         JsPsych.plugin.timer.setTimeout(() => {
-            JsPsych.instance.currTrial.finish({
+            if (!props.prac) JsPsych.instance.currTrial.finish({
+                trail_type: "bag_fall",
                 location: props.location,
                 reward: props.reward,
                 show_cloud: props.showCloud,
                 pregress: pregress.value,
                 win: true,
-                rt
+                rt, isTouch
             });
+            else reset();
         }, 3000);
         isClick = true;
     }
@@ -124,14 +133,16 @@ function drawBag(ctx: CanvasRenderingContext2D) {
         // 如果包裹落在了地面上
         JsPsych.plugin.timer.clearAllTimer();
         if (!isClick) JsPsych.plugin.timer.setTimeout(() => {
-            JsPsych.instance.currTrial.finish({
+            if (!props.prac) JsPsych.instance.currTrial.finish({
+                trail_type: "bag_fall",
                 location: props.location,
                 reward: props.reward,
                 show_cloud: props.showCloud,
                 pregress: pregress.value,
                 win: false,
-                rt
+                rt, isTouch
             });
+            else reset();
         }, 3000);
         isClick = true;
     }
@@ -166,10 +177,25 @@ onMounted(() => {
     canvas.width = width;
     canvas.height = height;
     frame(ctx);
+    reset();
 });
+function reset() {
+    pregress.value = 0;
+    fall = 0;
+    isClick = false;
+    rt = -1;
+    JsPsych.plugin.pointer.addListener(handler);
+    JsPsych.plugin.timer.setTimeout(() => {
+        JsPsych.plugin.pointer.removeListener(handler);
+        JsPsych.plugin.timer.setInterval(() => {
+            fall += 4;
+        }, 10);
+        ElMessage.error("反应太慢, 请快一点");
+    }, 3000); // 3秒超时
+}
 
 function handler(e: PointerEvent, time: number) {
-    if (e.type === "pointerdown") {
+    if (isTouch ? e.type === "pointerleave" : e.type === "pointerdown") {
         rt = JsPsych.instance.currTrial.getIntervalTime(time);
         JsPsych.plugin.pointer.removeListener(handler);
         JsPsych.plugin.timer.setInterval(() => {
@@ -190,7 +216,6 @@ function handler(e: PointerEvent, time: number) {
         pregress.value = t;
     }
 }
-JsPsych.plugin.pointer.addListener(handler);
 </script>
 
 <template>
