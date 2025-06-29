@@ -101,7 +101,7 @@ function end(obj: Record<string, any>) {
         </div>
         <div class="display" style="width: 75vw;" v-if="page === 6">
             <p>请回答下列问题</p>
-            <Questionnaire :ques="[
+            <Questionnaire class="ques" :ques="[
                 { name: 'q1', type: 'radio', title: '如果我_____, 则可以取得额外的奖励。', choices: ['点击直升机', '接住钱袋子', '尽快做出反应', '接住下落的物品'] },
                 { name: 'q2', type: 'radio', title: '下落的物品位置取决于。', choices: ['直升机的位置', '物品是沙袋还是钱袋', '之前是否抓住物品', '直升机的位置以及风力'] }
             ]" @end-trial="end"></Questionnaire>
@@ -112,11 +112,14 @@ function end(obj: Record<string, any>) {
 <style lang="css" scoped>
 .display {
     max-height: 100vh;
-    overflow: auto;
     font-size: 16px;
     line-height: 24px;
     text-indent: 2em;
     user-select: none;
+}
+
+.ques {
+    padding: 10px 0 0 0;
 }
 
 .text-box {

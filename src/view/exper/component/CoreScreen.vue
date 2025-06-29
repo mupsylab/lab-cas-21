@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import { useLoaderAssets } from '../../../store/loadAssetsToBlob';
 import { JsPsych } from '../../../utils/jsPsych/jsPsych';
 import { useCheckBrowserInfo } from '../../../store/browserCheck';
@@ -178,6 +178,10 @@ onMounted(() => {
     canvas.height = height;
     frame(ctx);
     reset();
+});
+onUnmounted(() => {
+    JsPsych.plugin.pointer.removeListener(handler);
+    JsPsych.plugin.timer.clearAllTimer();
 });
 function reset() {
     pregress.value = 0;
