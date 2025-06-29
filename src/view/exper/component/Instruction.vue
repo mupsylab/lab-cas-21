@@ -99,7 +99,7 @@ function end(obj: Record<string, any>) {
                 <ElButton @click="click(true)">下一页</ElButton>
             </div>
         </div>
-        <div class="display" v-if="page === 6">
+        <div class="display" style="width: 75vw;" v-if="page === 6">
             <p>请回答下列问题</p>
             <Questionnaire :ques="[
                 { name: 'q1', type: 'radio', title: '如果我_____, 则可以取得额外的奖励。', choices: ['点击直升机', '接住钱袋子', '尽快做出反应', '接住下落的物品'] },
