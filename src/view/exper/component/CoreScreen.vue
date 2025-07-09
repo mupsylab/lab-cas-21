@@ -161,6 +161,7 @@ function drawTarget(ctx: CanvasRenderingContext2D) {
 }
 
 function frame(ctx: CanvasRenderingContext2D) {
+    if (isClick) return;
     drawBackground(ctx);
     drawBag(ctx);
     drawHelicopter(ctx);
@@ -171,12 +172,6 @@ function frame(ctx: CanvasRenderingContext2D) {
     requestAnimationFrame(() => frame(ctx));
 }
 onMounted(() => {
-    const canvas = document.querySelector('#show') as HTMLCanvasElement;
-    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-
-    canvas.width = width;
-    canvas.height = height;
-    frame(ctx);
     reset();
 });
 onUnmounted(() => {
@@ -188,6 +183,13 @@ function reset() {
     fall = 0;
     isClick = false;
     rt = -1;
+
+    const canvas = document.querySelector('#show') as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+    canvas.width = width;
+    canvas.height = height;
+    frame(ctx);
+
     JsPsych.plugin.pointer.addListener(handler);
     JsPsych.plugin.timer.setTimeout(() => {
         JsPsych.plugin.pointer.removeListener(handler);

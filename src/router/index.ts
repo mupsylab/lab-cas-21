@@ -11,6 +11,11 @@ const router = createRouter({
       component: experDefault
     },
     {
+      path: "/test",
+      name: "experment-test",
+      component: () => import("../view/exper/test.vue")
+    },
+    {
       path: "/:pathMatch(.*)*",
       name: "not-found",
       component: () => import("../view/error/index.vue"),
